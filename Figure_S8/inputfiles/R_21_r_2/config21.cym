@@ -1,0 +1,98 @@
+
+
+
+
+export all *
+{
+    append = 1
+    binary = 0
+}
+ 
+set simul system
+{
+    dim = 3
+    time_step = 0.002
+    viscosity = 0.5
+    steric = 1, 1
+}
+
+set system display
+{
+    back_color = white;
+    style = 1;
+}
+
+set space cell
+{
+    shape = sphere
+}
+
+new cell
+{
+    radius = 1.0
+}
+
+set fiber actin
+{
+    rigidity = 0.075
+    segmentation = 0.1
+    confine = inside, 200, cell
+    display = (
+        line = 10, 1
+        color = 0xE62228FF
+        )    
+    activity = grow
+    growing_speed = 0.0103, 0
+    shrinking_speed = 0
+    growing_force = 10.0
+    max_length = 6.2832
+    steric = 1, 0.0035
+    binding_key = 1
+}
+
+set hand binder
+{
+    %Rate and distance
+    binding = 1, 0.03
+    %rate and force
+    unbinding = 0.01, 10.0 
+    display = ( size=0; color=yellow; )
+    binding_key = 1
+}
+
+set single graftedcrosslinker
+{
+    hand = binder
+    stiffness = 10.0
+    diffusion = 10.0
+}
+
+set solid blob
+{
+    confine = inside, 100
+    display = ( style=7; coloring=0; color=0x5CBA4780; )
+    steric = 1
+}
+
+% radius 30 nm with 2 spots, each 1 crosslinker
+new 20000 blob 
+{
+    %separation < 2R
+    separation = 0.06
+    deviation = 0.001
+    %radius
+    sphere1 = 0 0 0, 0.03, 1 graftedcrosslinker, 1 graftedcrosslinker
+}
+
+new 30 actin
+{
+    length = 0.1
+}
+
+run 300000 system 
+{
+    nb_frames = 600
+    binary = 0
+}
+
+

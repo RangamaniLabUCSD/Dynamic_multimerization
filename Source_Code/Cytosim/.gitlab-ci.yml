@@ -1,0 +1,39 @@
+# This file originally by FJN 3.12.2021
+
+image: gcc
+
+make_sim:
+    stage: build
+    before_script:
+      - apt update && apt -y install cmake autoconf libblas-dev liblapack-dev
+    script:
+      - mkdir -p build; cd build
+      - cmake -DMAKE_PLAY=OFF -DMAKE_TESTS=OFF ..
+      - make sim report reader sieve
+    artifacts:
+      paths:
+        - build/bin/sim
+        - build/bin/sieve
+        - build/bin/reader
+        - build/bin/report
+    cache:
+      key: $CI_COMMIT_BRANCH
+      paths:
+        - build
+
+make_play:
+    stage: build
+    before_script:
+      - apt update && apt -y install cmake autoconf libblas-dev liblapack-dev mesa-common-dev libglew-dev freeglut3-dev
+    script:
+      - mkdir -p build; cd build
+      - cmake -DMAKE_TOOLS=OFF ..
+      - make play
+    artifacts:
+      paths:
+        - build/bin/play
+    cache:
+      key: libglut-cache 
+      paths:
+        - /usr/lib/x86_64-linux-gnu/libglut*
+      
